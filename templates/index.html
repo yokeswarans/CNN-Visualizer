@@ -7,121 +7,66 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:       #0a0a0f;
-    --surface:  #12121a;
-    --card:     #1a1a26;
-    --border:   #2a2a3e;
-    --accent:   #7c6aff;
-    --accent2:  #ff6ab0;
-    --accent3:  #6affda;
-    --text:     #e8e8f0;
-    --muted:    #6b6b88;
-    --mono:     'JetBrains Mono', monospace;
-    --sans:     'Space Grotesk', sans-serif;
+    --bg:      #0a0a0f; --surface: #12121a; --card: #1a1a26;
+    --border:  #2a2a3e; --accent:  #7c6aff; --accent2: #ff6ab0;
+    --accent3: #6affda; --text:    #e8e8f0; --muted:   #6b6b88;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Space Grotesk', sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-  /* scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  /* ── Layout ── */
   .app { display: grid; grid-template-columns: 340px 1fr; min-height: 100vh; }
 
   /* ── Sidebar ── */
-  .sidebar {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    overflow-y: auto; position: sticky; top: 0; height: 100vh;
-  }
-  .sidebar-header {
-    padding: 24px 20px 16px;
-    border-bottom: 1px solid var(--border);
-  }
+  .sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; position: sticky; top: 0; height: 100vh; }
+  .sidebar-header { padding: 24px 20px 16px; border-bottom: 1px solid var(--border); }
   .logo { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-family: var(--mono); margin-bottom: 6px; }
-  .title { font-size: 20px; font-weight: 600; line-height: 1.2; }
-  .title span { color: var(--accent2); }
+  .title { font-size: 20px; font-weight: 600; } .title span { color: var(--accent2); }
   .subtitle { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .sidebar-body { padding: 16px 20px; flex: 1; display: flex; flex-direction: column; gap: 18px; }
 
-  .sidebar-body { padding: 16px 20px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+  /* mode toggle */
+  .mode-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .mode-btn { background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); cursor: pointer; font-family: var(--sans); font-size: 12px; font-weight: 500; padding: 10px; text-align: center; transition: all 0.15s; }
+  .mode-btn.active { background: rgba(124,106,255,0.12); border-color: var(--accent); color: var(--accent); }
+  .mode-btn:hover:not(.active) { border-color: var(--border); color: var(--text); }
 
-  /* upload zone */
-  .upload-zone {
-    border: 1.5px dashed var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-  }
+  /* upload */
+  .upload-zone { border: 1.5px dashed var(--border); border-radius: 12px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
   .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(124,106,255,0.04); }
   .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-  .upload-icon { font-size: 28px; margin-bottom: 8px; }
-  .upload-zone p { font-size: 12px; color: var(--muted); }
-  .upload-zone strong { color: var(--text); display: block; font-size: 13px; margin-bottom: 4px; }
+  .upload-icon { font-size: 26px; margin-bottom: 6px; }
+  .upload-zone p { font-size: 12px; color: var(--muted); } .upload-zone strong { color: var(--text); display: block; font-size: 13px; margin-bottom: 3px; }
   #img-preview { width: 100%; border-radius: 8px; margin-top: 10px; display: none; border: 1px solid var(--border); }
 
-  /* section */
-  .section-title {
-    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--muted); font-family: var(--mono); margin-bottom: 10px;
-    display: flex; align-items: center; gap: 8px;
-  }
+  .section-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
   .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* global settings */
   .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .field { display: flex; flex-direction: column; gap: 4px; }
   .field label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
-  .field select, .field input[type="number"] {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 12px;
-    padding: 7px 10px;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.15s;
-  }
+  .field select, .field input[type="number"] { background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--mono); font-size: 12px; padding: 7px 10px; width: 100%; outline: none; transition: border-color 0.15s; }
   .field select:focus, .field input:focus { border-color: var(--accent); }
+
+  /* vgg layers slider */
+  .slider-row { display: flex; align-items: center; gap: 10px; }
+  .slider-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+  .slider-val { font-size: 12px; font-family: var(--mono); color: var(--accent); min-width: 20px; text-align: right; }
+
+  /* vgg info box */
+  .vgg-info { background: rgba(124,106,255,0.06); border: 1px solid rgba(124,106,255,0.2); border-radius: 10px; padding: 12px; font-size: 11px; color: var(--muted); line-height: 1.6; font-family: var(--mono); }
+  .vgg-info b { color: var(--accent3); }
 
   /* layers */
   .layers-list { display: flex; flex-direction: column; gap: 8px; }
-  .layer-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: border-color 0.15s;
-  }
+  .layer-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.15s; }
   .layer-card:hover { border-color: var(--accent); }
-  .layer-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 12px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .layer-badge {
-    font-size: 10px; font-family: var(--mono);
-    background: rgba(124,106,255,0.15);
-    color: var(--accent);
-    padding: 2px 8px; border-radius: 20px;
-    letter-spacing: 1px;
-  }
+  .layer-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; cursor: pointer; user-select: none; }
+  .layer-badge { font-size: 10px; font-family: var(--mono); background: rgba(124,106,255,0.15); color: var(--accent); padding: 2px 8px; border-radius: 20px; letter-spacing: 1px; }
   .layer-title { font-size: 12px; font-weight: 500; }
   .layer-summary { font-size: 10px; color: var(--muted); font-family: var(--mono); }
-  .del-btn {
-    background: none; border: none; color: var(--muted);
-    cursor: pointer; font-size: 16px; padding: 2px 6px;
-    border-radius: 4px; transition: color 0.15s, background 0.15s;
-    line-height: 1;
-  }
+  .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; transition: all 0.15s; line-height: 1; }
   .del-btn:hover { color: var(--accent2); background: rgba(255,106,176,0.1); }
   .layer-body { padding: 12px; border-top: 1px solid var(--border); display: none; }
   .layer-body.open { display: block; }
@@ -130,136 +75,83 @@
   .toggle-label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
   .toggle { position: relative; width: 36px; height: 20px; }
   .toggle input { opacity: 0; width: 0; height: 0; }
-  .slider {
-    position: absolute; inset: 0; background: var(--border);
-    border-radius: 20px; cursor: pointer; transition: background 0.2s;
-  }
-  .slider::before {
-    content: ''; position: absolute;
-    width: 14px; height: 14px; background: white;
-    border-radius: 50%; left: 3px; top: 3px;
-    transition: transform 0.2s;
-  }
-  .toggle input:checked + .slider { background: var(--accent); }
-  .toggle input:checked + .slider::before { transform: translateX(16px); }
+  .slider-knob { position: absolute; inset: 0; background: var(--border); border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+  .slider-knob::before { content: ''; position: absolute; width: 14px; height: 14px; background: white; border-radius: 50%; left: 3px; top: 3px; transition: transform 0.2s; }
+  .toggle input:checked + .slider-knob { background: var(--accent); }
+  .toggle input:checked + .slider-knob::before { transform: translateX(16px); }
 
-  /* buttons */
-  .btn-add {
-    background: none;
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    cursor: pointer;
-    font-family: var(--sans);
-    font-size: 12px;
-    padding: 9px;
-    text-align: center;
-    transition: all 0.15s;
-    width: 100%;
-  }
+  .btn-add { background: none; border: 1px dashed var(--border); border-radius: 8px; color: var(--muted); cursor: pointer; font-family: var(--sans); font-size: 12px; padding: 9px; text-align: center; transition: all 0.15s; width: 100%; }
   .btn-add:hover { border-color: var(--accent3); color: var(--accent3); background: rgba(106,255,218,0.04); }
-  .btn-run {
-    background: var(--accent);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    font-family: var(--sans);
-    font-size: 14px;
-    font-weight: 600;
-    padding: 13px;
-    width: 100%;
-    transition: all 0.2s;
-    letter-spacing: 0.3px;
-    margin-top: auto;
-  }
+  .btn-run { background: var(--accent); border: none; border-radius: 10px; color: white; cursor: pointer; font-family: var(--sans); font-size: 14px; font-weight: 600; padding: 13px; width: 100%; transition: all 0.2s; margin-top: auto; }
   .btn-run:hover { background: #9580ff; transform: translateY(-1px); }
   .btn-run:active { transform: translateY(0); }
   .btn-run:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
 
-  /* ── Main content ── */
+  /* ── Main ── */
   .main { padding: 28px 32px; overflow-y: auto; }
   .main-header { margin-bottom: 28px; }
   .main-header h2 { font-size: 14px; color: var(--muted); font-weight: 400; font-family: var(--mono); }
 
-  /* pipeline */
-  .pipeline { display: flex; flex-direction: column; gap: 32px; }
+  .pipeline { display: flex; flex-direction: column; gap: 28px; }
 
-  /* layer result card */
-  .layer-result {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    animation: fadeUp 0.4s ease both;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .layer-result-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--card);
-  }
+  /* prediction card */
+  .pred-card { background: var(--surface); border: 1px solid rgba(106,255,218,0.25); border-radius: 16px; overflow: hidden; animation: fadeUp 0.35s ease both; }
+  .pred-header { padding: 14px 20px; background: rgba(106,255,218,0.06); border-bottom: 1px solid rgba(106,255,218,0.15); display: flex; align-items: center; gap: 10px; }
+  .pred-header span { font-size: 14px; font-weight: 600; color: var(--accent3); }
+  .pred-header small { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-left: auto; }
+  .pred-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .pred-row { display: flex; flex-direction: column; gap: 4px; }
+  .pred-label-row { display: flex; justify-content: space-between; align-items: center; }
+  .pred-name { font-size: 13px; font-weight: 500; }
+  .pred-conf { font-size: 12px; font-family: var(--mono); color: var(--accent3); }
+  .pred-bar-bg { background: var(--border); border-radius: 4px; height: 5px; overflow: hidden; }
+  .pred-bar { height: 5px; border-radius: 4px; background: linear-gradient(90deg, var(--accent3), var(--accent)); transition: width 0.6s ease; }
+  .pred-top { border: 1px solid rgba(106,255,218,0.3); border-radius: 10px; padding: 10px 12px; background: rgba(106,255,218,0.04); }
+
+  /* layer result */
+  .layer-result { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; animation: fadeUp 0.4s ease both; }
+  .layer-result.is-last { border-color: rgba(255,106,176,0.35); }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .layer-result-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--card); flex-wrap: wrap; gap: 10px; }
+  .layer-result.is-last .layer-result-header { background: rgba(255,106,176,0.04); border-bottom-color: rgba(255,106,176,0.2); }
   .layer-result-title { display: flex; align-items: center; gap: 10px; }
-  .layer-num {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: rgba(124,106,255,0.15);
-    color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 500;
-    display: flex; align-items: center; justify-content: center;
-  }
+  .layer-num { width: 32px; height: 32px; border-radius: 8px; background: rgba(124,106,255,0.15); color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+  .layer-result.is-last .layer-num { background: rgba(255,106,176,0.15); color: var(--accent2); }
   .layer-result-name { font-size: 14px; font-weight: 500; }
   .layer-result-shape { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 1px; }
   .stats-pills { display: flex; gap: 8px; flex-wrap: wrap; }
-  .pill {
-    font-size: 10px; font-family: var(--mono);
-    padding: 3px 9px; border-radius: 20px; letter-spacing: 0.5px;
-  }
+  .pill { font-size: 10px; font-family: var(--mono); padding: 3px 9px; border-radius: 20px; letter-spacing: 0.5px; }
   .pill-purple { background: rgba(124,106,255,0.12); color: var(--accent); }
   .pill-pink   { background: rgba(255,106,176,0.12); color: var(--accent2); }
   .pill-teal   { background: rgba(106,255,218,0.12); color: var(--accent3); }
-  .pill-gray   { background: rgba(107,107,136,0.15); color: var(--muted); }
+  .op-tag { font-size: 10px; font-family: var(--mono); padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
 
-  .ops-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-  .op-tag {
-    font-size: 10px; font-family: var(--mono);
-    padding: 2px 7px; border-radius: 4px;
-    background: rgba(255,255,255,0.05); color: var(--muted);
-    border: 1px solid var(--border);
-  }
-
-  /* maps grid */
   .maps-section { padding: 16px 20px; }
-  .maps-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 12px; }
+  .maps-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .maps-label .last-note { color: var(--accent2); font-size: 9px; }
   .maps-grid { display: flex; flex-wrap: wrap; gap: 10px; }
   .map-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .map-item img { width: 90px; height: 90px; border-radius: 6px; border: 1px solid var(--border); object-fit: cover; display: block; }
+  .map-item img { width: 88px; height: 88px; border-radius: 6px; border: 1px solid var(--border); object-fit: cover; display: block; }
+  .map-item img.top-map { border-color: var(--accent2); box-shadow: 0 0 8px rgba(255,106,176,0.4); }
   .map-ch { font-size: 9px; color: var(--muted); font-family: var(--mono); }
+  .map-ch.top { color: var(--accent2); }
+  .top-badge { font-size: 8px; background: rgba(255,106,176,0.2); color: var(--accent2); border-radius: 3px; padding: 1px 4px; font-family: var(--mono); }
 
-  /* original image */
-  .orig-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; overflow: hidden; animation: fadeUp 0.3s ease both;
-  }
+  /* orig */
+  .orig-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; animation: fadeUp 0.3s ease both; }
   .orig-header { padding: 12px 20px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
   .orig-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent3); }
   .orig-header span { font-size: 13px; font-weight: 500; }
   .orig-body { padding: 16px 20px; }
-  .orig-body img { border-radius: 8px; border: 1px solid var(--border); max-width: 200px; display: block; }
+  .orig-body img { border-radius: 8px; border: 1px solid var(--border); max-width: 180px; display: block; }
 
-  /* connector arrow */
-  .connector { display: flex; align-items: center; gap: 0; padding: 0 0 0 16px; }
-  .connector-line { width: 2px; height: 24px; background: var(--border); margin-left: 15px; }
+  .connector-line { width: 2px; height: 20px; background: var(--border); margin-left: 15px; }
 
-  /* empty state */
   .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 12px; color: var(--muted); text-align: center; }
   .empty-icon { font-size: 48px; opacity: 0.4; }
   .empty-state h3 { font-size: 16px; font-weight: 400; color: var(--text); }
   .empty-state p { font-size: 13px; max-width: 280px; line-height: 1.6; }
 
-  /* loading */
   .loading { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; }
   .loading.show { display: flex; }
   .spinner { width: 40px; height: 40px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -267,17 +159,10 @@
   .loading-text { font-size: 13px; color: var(--muted); font-family: var(--mono); }
   .loading-sub { font-size: 11px; color: var(--muted); opacity: 0.6; font-family: var(--mono); }
 
-  /* error */
   .error-box { background: rgba(255,106,176,0.08); border: 1px solid rgba(255,106,176,0.3); border-radius: 10px; padding: 14px 16px; font-size: 12px; font-family: var(--mono); color: var(--accent2); display: none; }
   .error-box.show { display: block; }
 
-  /* final banner */
-  .final-banner {
-    background: linear-gradient(135deg, rgba(124,106,255,0.08), rgba(106,255,218,0.06));
-    border: 1px solid rgba(124,106,255,0.25);
-    border-radius: 12px; padding: 16px 20px;
-    margin-top: 24px;
-  }
+  .final-banner { background: linear-gradient(135deg,rgba(124,106,255,0.08),rgba(106,255,218,0.06)); border: 1px solid rgba(124,106,255,0.25); border-radius: 12px; padding: 16px 20px; margin-top: 8px; }
   .final-banner h3 { font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 6px; }
   .final-banner p { font-size: 12px; color: var(--muted); line-height: 1.6; }
   .final-banner code { color: var(--accent3); font-family: var(--mono); font-size: 11px; }
@@ -286,108 +171,138 @@
 <body>
 <div class="app">
 
-  <!-- ════════ SIDEBAR ════════ -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">Deep Vision</div>
-      <div class="title">CNN <span>Visualizer</span></div>
-      <div class="subtitle">Watch your image flow through every layer</div>
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">Deep Vision</div>
+    <div class="title">CNN <span>Visualizer</span></div>
+    <div class="subtitle">Watch your image flow through every layer</div>
+  </div>
+
+  <div class="sidebar-body">
+
+    <!-- Mode -->
+    <div>
+      <div class="section-title">Weight Mode</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="btn-custom" onclick="setMode('custom')">🎲 Random<br><small style="font-size:10px;opacity:0.7">custom arch</small></button>
+        <button class="mode-btn" id="btn-vgg16"  onclick="setMode('vgg16')">🧠 VGG16<br><small style="font-size:10px;opacity:0.7">pretrained</small></button>
+      </div>
     </div>
 
-    <div class="sidebar-body">
+    <!-- Upload -->
+    <div>
+      <div class="section-title">Input Image</div>
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="img-input" accept="image/*">
+        <div class="upload-icon">🖼</div>
+        <strong>Drop image or click</strong>
+        <p>jpg · png · webp</p>
+        <img id="img-preview" alt="preview">
+      </div>
+    </div>
 
-      <!-- Upload -->
-      <div>
-        <div class="section-title">Input Image</div>
-        <div class="upload-zone" id="upload-zone">
-          <input type="file" id="img-input" accept="image/*">
-          <div class="upload-icon">🖼</div>
-          <strong>Drop image or click to browse</strong>
-          <p>jpg · png · webp · any size</p>
-          <img id="img-preview" alt="preview">
+    <!-- Global settings -->
+    <div>
+      <div class="section-title">Settings</div>
+      <div class="settings-grid">
+        <div class="field" id="imgsize-field">
+          <label>img resize (px)</label>
+          <input type="number" id="img-size" value="128" min="32" max="256" step="32">
+        </div>
+        <div class="field">
+          <label>maps to show</label>
+          <input type="number" id="max-maps" value="8" min="1" max="16">
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>colormap</label>
+          <select id="colormap">
+            <option value="viridis">Viridis</option>
+            <option value="heat">Heat</option>
+            <option value="cool">Cool</option>
+            <option value="plasma">Plasma</option>
+            <option value="gray">Grayscale</option>
+          </select>
         </div>
       </div>
+    </div>
 
-      <!-- Global settings -->
-      <div>
-        <div class="section-title">Global Settings</div>
-        <div class="settings-grid">
-          <div class="field">
-            <label>img resize (px)</label>
-            <input type="number" id="img-size" value="128" min="32" max="256" step="32">
-          </div>
-          <div class="field">
-            <label>maps to show</label>
-            <input type="number" id="max-maps" value="8" min="1" max="16">
-          </div>
-          <div class="field" style="grid-column:1/-1">
-            <label>colormap</label>
-            <select id="colormap">
-              <option value="viridis">Viridis</option>
-              <option value="heat">Heat</option>
-              <option value="cool">Cool</option>
-              <option value="plasma">Plasma</option>
-              <option value="gray">Grayscale</option>
-            </select>
-          </div>
+    <!-- VGG16 layer slider (shown only in vgg16 mode) -->
+    <div id="vgg-settings" style="display:none;">
+      <div class="section-title">VGG16 Depth</div>
+      <div class="vgg-info">
+        VGG16 has <b>13 conv layers</b> across 5 blocks.<br>
+        Drag to choose how deep to visualize.
+      </div>
+      <div style="margin-top:10px;">
+        <label style="font-size:11px;color:var(--muted);font-family:var(--mono);">layers to show</label>
+        <div class="slider-row" style="margin-top:6px;">
+          <input type="range" id="vgg-layers" min="1" max="13" value="5" oninput="document.getElementById('vgg-layers-val').textContent=this.value">
+          <span class="slider-val" id="vgg-layers-val">5</span>
         </div>
       </div>
-
-      <!-- Layers -->
-      <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
-        <div class="section-title">Conv Layers</div>
-        <div class="layers-list" id="layers-list"></div>
-        <button class="btn-add" onclick="addLayer()">+ Add Conv Layer</button>
-      </div>
-
-      <div id="error-box" class="error-box"></div>
-      <button class="btn-run" id="run-btn" onclick="runVisualize()">▶ Run Visualization</button>
-
-    </div>
-  </aside>
-
-  <!-- ════════ MAIN ════════ -->
-  <main class="main">
-    <div class="main-header">
-      <h2>// activation maps — layer by layer</h2>
     </div>
 
-    <div id="empty-state" class="empty-state">
-      <div class="empty-icon">🧠</div>
-      <h3>No activations yet</h3>
-      <p>Upload an image, configure your CNN layers, and hit Run to see each layer's feature maps.</p>
+    <!-- Custom layers (shown only in custom mode) -->
+    <div id="custom-settings" style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div class="section-title">Conv Layers</div>
+      <div class="layers-list" id="layers-list"></div>
+      <button class="btn-add" onclick="addLayer()">+ Add Conv Layer</button>
     </div>
 
-    <div id="loading" class="loading">
-      <div class="spinner"></div>
-      <div class="loading-text">Running forward pass...</div>
-      <div class="loading-sub">PyTorch is computing your activations</div>
-    </div>
+    <div id="error-box" class="error-box"></div>
+    <button class="btn-run" id="run-btn" onclick="runVisualize()">▶ Run Visualization</button>
 
-    <div id="pipeline" class="pipeline" style="display:none;"></div>
-  </main>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="main">
+  <div class="main-header">
+    <h2 id="main-subtitle">// activation maps — layer by layer</h2>
+  </div>
+
+  <div id="empty-state" class="empty-state">
+    <div class="empty-icon">🧠</div>
+    <h3>No activations yet</h3>
+    <p>Upload an image, pick a mode, and hit Run to see each layer's feature maps.</p>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loading-text">Running forward pass...</div>
+    <div class="loading-sub" id="loading-sub">PyTorch is computing activations</div>
+  </div>
+
+  <div id="pipeline" class="pipeline" style="display:none;"></div>
+</main>
 
 </div>
-
 <script>
+/* ─── State ─── */
+let imgFile   = null;
 let layerCount = 0;
-let imgFile = null;
+let currentMode = 'custom';
 
-/* ── Default layers ── */
-function init() {
-  addLayer({ hidden_units: 6,  kernel_size: 3, stride: 1, padding: 1, batchnorm: true, relu: true, pooling: false });
-  addLayer({ hidden_units: 16, kernel_size: 3, stride: 1, padding: 0, batchnorm: true, relu: true, pooling: true });
+/* ─── Mode switching ─── */
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btn-custom').classList.toggle('active', mode === 'custom');
+  document.getElementById('btn-vgg16').classList.toggle('active',  mode === 'vgg16');
+  document.getElementById('custom-settings').style.display = mode === 'custom' ? 'flex' : 'none';
+  document.getElementById('vgg-settings').style.display    = mode === 'vgg16'  ? 'block' : 'none';
+  document.getElementById('imgsize-field').style.display   = mode === 'custom' ? 'flex' : 'none';
+  document.getElementById('main-subtitle').textContent =
+    mode === 'vgg16' ? '// VGG16 pretrained — layer by layer' : '// activation maps — layer by layer';
 }
 
-/* ── Layer management ── */
-function addLayer(defaults = {}) {
+/* ─── Layer management ─── */
+function addLayer(d = {}) {
   layerCount++;
   const id = layerCount;
-  const d  = { hidden_units: 8, kernel_size: 3, stride: 1, padding: 1, batchnorm: true, relu: true, pooling: false, ...defaults };
-
+  const defaults = { hidden_units:8, kernel_size:3, stride:1, padding:1, batchnorm:true, relu:true, pooling:false, ...d };
   const card = document.createElement('div');
-  card.className = 'layer-card';
-  card.id = `layer-card-${id}`;
+  card.className = 'layer-card'; card.id = `layer-card-${id}`;
   card.innerHTML = `
     <div class="layer-header" onclick="toggleLayer(${id})">
       <div>
@@ -395,132 +310,80 @@ function addLayer(defaults = {}) {
           <span class="layer-badge">L${id}</span>
           <span class="layer-title">Conv Block ${id}</span>
         </div>
-        <div class="layer-summary" id="summary-${id}">${d.hidden_units} filters · k${d.kernel_size} · s${d.stride} · p${d.padding}</div>
+        <div class="layer-summary" id="summary-${id}">${defaults.hidden_units} filters · k${defaults.kernel_size} · s${defaults.stride} · p${defaults.padding}</div>
       </div>
-      <button class="del-btn" onclick="event.stopPropagation(); removeLayer(${id})">✕</button>
+      <button class="del-btn" onclick="event.stopPropagation();removeLayer(${id})">✕</button>
     </div>
     <div class="layer-body" id="body-${id}">
       <div class="layer-grid">
-        <div class="field">
-          <label>hidden units</label>
-          <input type="number" id="hu-${id}" value="${d.hidden_units}" min="1" max="256" onchange="updateSummary(${id})">
-        </div>
-        <div class="field">
-          <label>kernel size</label>
-          <input type="number" id="ks-${id}" value="${d.kernel_size}" min="1" max="11" step="2" onchange="updateSummary(${id})">
-        </div>
-        <div class="field">
-          <label>stride</label>
-          <input type="number" id="st-${id}" value="${d.stride}" min="1" max="4" onchange="updateSummary(${id})">
-        </div>
-        <div class="field">
-          <label>padding</label>
-          <input type="number" id="pa-${id}" value="${d.padding}" min="0" max="5" onchange="updateSummary(${id})">
-        </div>
+        <div class="field"><label>hidden units</label><input type="number" id="hu-${id}" value="${defaults.hidden_units}" min="1" max="256" onchange="updateSummary(${id})"></div>
+        <div class="field"><label>kernel size</label><input type="number" id="ks-${id}" value="${defaults.kernel_size}" min="1" max="11" step="2" onchange="updateSummary(${id})"></div>
+        <div class="field"><label>stride</label><input type="number" id="st-${id}" value="${defaults.stride}" min="1" max="4" onchange="updateSummary(${id})"></div>
+        <div class="field"><label>padding</label><input type="number" id="pa-${id}" value="${defaults.padding}" min="0" max="5" onchange="updateSummary(${id})"></div>
       </div>
-      <div class="toggle-row">
-        <span class="toggle-label">BatchNorm</span>
-        <label class="toggle"><input type="checkbox" id="bn-${id}" ${d.batchnorm?'checked':''}><span class="slider"></span></label>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">ReLU</span>
-        <label class="toggle"><input type="checkbox" id="rl-${id}" ${d.relu?'checked':''}><span class="slider"></span></label>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">MaxPool 2×2</span>
-        <label class="toggle"><input type="checkbox" id="po-${id}" ${d.pooling?'checked':''}><span class="slider"></span></label>
-      </div>
+      <div class="toggle-row"><span class="toggle-label">BatchNorm</span><label class="toggle"><input type="checkbox" id="bn-${id}" ${defaults.batchnorm?'checked':''}><span class="slider-knob"></span></label></div>
+      <div class="toggle-row"><span class="toggle-label">ReLU</span><label class="toggle"><input type="checkbox" id="rl-${id}" ${defaults.relu?'checked':''}><span class="slider-knob"></span></label></div>
+      <div class="toggle-row"><span class="toggle-label">MaxPool 2×2</span><label class="toggle"><input type="checkbox" id="po-${id}" ${defaults.pooling?'checked':''}><span class="slider-knob"></span></label></div>
     </div>`;
   document.getElementById('layers-list').appendChild(card);
 }
-
-function toggleLayer(id) {
-  const body = document.getElementById(`body-${id}`);
-  body.classList.toggle('open');
-}
-
-function removeLayer(id) {
-  const card = document.getElementById(`layer-card-${id}`);
-  if (card) card.remove();
-}
-
+function toggleLayer(id) { document.getElementById(`body-${id}`).classList.toggle('open'); }
+function removeLayer(id) { document.getElementById(`layer-card-${id}`)?.remove(); }
 function updateSummary(id) {
-  const hu = document.getElementById(`hu-${id}`)?.value || '?';
-  const ks = document.getElementById(`ks-${id}`)?.value || '?';
-  const st = document.getElementById(`st-${id}`)?.value || '?';
-  const pa = document.getElementById(`pa-${id}`)?.value || '?';
-  const el = document.getElementById(`summary-${id}`);
-  if (el) el.textContent = `${hu} filters · k${ks} · s${st} · p${pa}`;
+  const hu=document.getElementById(`hu-${id}`)?.value, ks=document.getElementById(`ks-${id}`)?.value,
+        st=document.getElementById(`st-${id}`)?.value, pa=document.getElementById(`pa-${id}`)?.value;
+  const el=document.getElementById(`summary-${id}`); if(el) el.textContent=`${hu} filters · k${ks} · s${st} · p${pa}`;
 }
-
 function getLayersConfig() {
-  const cards = document.querySelectorAll('.layer-card');
-  const layers = [];
-  for (const card of cards) {
-    const id = card.id.replace('layer-card-', '');
-    const hu = document.getElementById(`hu-${id}`);
-    if (!hu) continue;
-    layers.push({
-      hidden_units: parseInt(hu.value),
+  return [...document.querySelectorAll('.layer-card')].map(card => {
+    const id = card.id.replace('layer-card-','');
+    return {
+      hidden_units: parseInt(document.getElementById(`hu-${id}`).value),
       kernel_size:  parseInt(document.getElementById(`ks-${id}`).value),
       stride:       parseInt(document.getElementById(`st-${id}`).value),
       padding:      parseInt(document.getElementById(`pa-${id}`).value),
       batchnorm:    document.getElementById(`bn-${id}`).checked,
       relu:         document.getElementById(`rl-${id}`).checked,
       pooling:      document.getElementById(`po-${id}`).checked,
-    });
-  }
-  return layers;
+    };
+  });
 }
 
-/* ── Upload ── */
+/* ─── Upload ─── */
 document.getElementById('img-input').addEventListener('change', function() {
-  const file = this.files[0];
-  if (!file) return;
-  imgFile = file;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const prev = document.getElementById('img-preview');
-    prev.src = e.target.result;
-    prev.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
+  const f = this.files[0]; if (!f) return; imgFile = f;
+  const r = new FileReader(); r.onload = e => { const p=document.getElementById('img-preview'); p.src=e.target.result; p.style.display='block'; }; r.readAsDataURL(f);
 });
 const zone = document.getElementById('upload-zone');
 zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
 zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
 zone.addEventListener('drop', e => {
   e.preventDefault(); zone.classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (!file || !file.type.startsWith('image/')) return;
-  imgFile = file;
-  const dt = new DataTransfer();
-  dt.items.add(file);
-  document.getElementById('img-input').files = dt.files;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const prev = document.getElementById('img-preview');
-    prev.src = ev.target.result; prev.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
+  const f = e.dataTransfer.files[0]; if (!f || !f.type.startsWith('image/')) return;
+  imgFile = f;
+  const dt = new DataTransfer(); dt.items.add(f); document.getElementById('img-input').files = dt.files;
+  const r = new FileReader(); r.onload = ev => { const p=document.getElementById('img-preview'); p.src=ev.target.result; p.style.display='block'; }; r.readAsDataURL(f);
 });
 
-/* ── Run ── */
+/* ─── Run ─── */
 async function runVisualize() {
-  const errBox = document.getElementById('error-box');
-  errBox.classList.remove('show');
-
+  const errBox = document.getElementById('error-box'); errBox.classList.remove('show');
   if (!imgFile) { showError('Please upload an image first.'); return; }
-  const layers = getLayersConfig();
-  if (layers.length === 0) { showError('Add at least one Conv layer.'); return; }
 
-  setLoading(true);
+  if (currentMode === 'custom') {
+    const layers = getLayersConfig();
+    if (!layers.length) { showError('Add at least one Conv layer.'); return; }
+  }
+
+  setLoading(true, currentMode === 'vgg16');
 
   const config = {
-    layers,
-    img_size:  parseInt(document.getElementById('img-size').value),
-    max_maps:  parseInt(document.getElementById('max-maps').value),
-    colormap:  document.getElementById('colormap').value,
+    mode:     currentMode,
+    max_maps: parseInt(document.getElementById('max-maps').value),
+    colormap: document.getElementById('colormap').value,
+    img_size: parseInt(document.getElementById('img-size').value || 128),
+    vgg_layers: parseInt(document.getElementById('vgg-layers').value),
+    layers:   currentMode === 'custom' ? getLayersConfig() : [],
   };
 
   const form = new FormData();
@@ -528,119 +391,147 @@ async function runVisualize() {
   form.append('config', JSON.stringify(config));
 
   try {
-    const res  = await fetch('/visualize', { method: 'POST', body: form });
+    const res  = await fetch('/visualize', { method:'POST', body:form });
     const data = await res.json();
     if (!data.success) { showError(data.error); setLoading(false); return; }
     renderResults(data);
-  } catch(e) {
-    showError('Network error: ' + e.message);
-  }
+  } catch(e) { showError('Network error: ' + e.message); }
   setLoading(false);
 }
 
+/* ─── Render ─── */
 function renderResults(data) {
   const pipeline = document.getElementById('pipeline');
-  pipeline.innerHTML = '';
-  pipeline.style.display = 'flex';
+  pipeline.innerHTML = ''; pipeline.style.display = 'flex';
   document.getElementById('empty-state').style.display = 'none';
 
-  /* original */
-  const origCard = document.createElement('div');
-  origCard.className = 'orig-card';
+  /* original image */
+  const origCard = document.createElement('div'); origCard.className='orig-card';
   origCard.innerHTML = `
     <div class="orig-header">
-      <div class="orig-dot"></div>
-      <span>Input Image</span>
-      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-left:auto">${document.getElementById('img-size').value}×${document.getElementById('img-size').value}×3</span>
+      <div class="orig-dot"></div><span>Input Image</span>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-left:auto">224×224 px</span>
     </div>
-    <div class="orig-body">
-      <img src="data:image/png;base64,${data.original}" alt="input">
-    </div>`;
+    <div class="orig-body"><img src="data:image/png;base64,${data.original}" alt="input"></div>`;
   pipeline.appendChild(origCard);
 
-  /* each layer */
+  /* predictions (VGG16 only) */
+  if (data.predictions && data.predictions.length) {
+    pipeline.appendChild(mkConnector());
+    pipeline.appendChild(mkPredictions(data.predictions));
+  }
+
+  /* layer cards */
   data.layers.forEach((layer, idx) => {
-    /* connector */
-    const conn = document.createElement('div');
-    conn.className = 'connector';
-    conn.innerHTML = '<div class="connector-line"></div>';
-    pipeline.appendChild(conn);
-
-    /* ops string */
-    const ops = ['Conv2d'];
-    if (layer.batchnorm) ops.push('BatchNorm2d');
-    if (layer.relu) ops.push('ReLU');
-    if (layer.pooling) ops.push('MaxPool2d');
-
-    const card = document.createElement('div');
-    card.className = 'layer-result';
-    card.style.animationDelay = (idx * 0.08) + 's';
-
-    /* maps html */
-    const mapsHtml = layer.maps.map((b64, i) => `
-      <div class="map-item">
-        <img src="data:image/png;base64,${b64}" alt="ch${i+1}">
-        <span class="map-ch">ch ${i+1}</span>
-      </div>`).join('');
-
-    const moreNote = layer.total_maps > layer.shown_maps
-      ? `<span style="font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono);">showing ${layer.shown_maps} of ${layer.total_maps} channels</span>`
-      : '';
-
-    card.innerHTML = `
-      <div class="layer-result-header">
-        <div class="layer-result-title">
-          <div class="layer-num">L${layer.layer_idx}</div>
-          <div>
-            <div class="layer-result-name">Conv Block ${layer.layer_idx}</div>
-            <div class="layer-result-shape">${layer.shape[0]}ch × ${layer.shape[1]}×${layer.shape[2]}px</div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-          <div class="stats-pills">
-            <span class="pill pill-purple">mean ${layer.mean_activation}</span>
-            <span class="pill pill-pink">max ${layer.max_activation}</span>
-            <span class="pill pill-teal">${100 - layer.sparsity}% active</span>
-          </div>
-          <div class="ops-tags">${ops.map(o=>`<span class="op-tag">${o}</span>`).join('')}</div>
-        </div>
-      </div>
-      <div class="maps-section">
-        <div class="maps-label">Activation Maps — after ReLU</div>
-        <div class="maps-grid">${mapsHtml}</div>
-        ${moreNote}
-      </div>`;
-    pipeline.appendChild(card);
+    pipeline.appendChild(mkConnector());
+    pipeline.appendChild(mkLayerCard(layer, idx));
   });
 
   /* final banner */
   const last = data.layers[data.layers.length - 1];
-  const banner = document.createElement('div');
-  banner.className = 'final-banner';
+  const banner = document.createElement('div'); banner.className='final-banner';
+  const modeNote = data.mode === 'vgg16'
+    ? 'These are <code>real learned features</code> — patterns the network learned from 1.2M ImageNet images.'
+    : 'These are <code>random weight activations</code> — not meaningful features. Train the network first to see real patterns.';
   banner.innerHTML = `
-    <h3>🎯 Final Feature Maps — Ready for Classification</h3>
-    <p>This <code>${last.shape[0]}×${last.shape[1]}×${last.shape[2]}</code> volume is what the fully connected layer sees.
-    Each of the <code>${last.shape[0]}</code> channels represents a high-level feature detected by the network.
-    In a real CNN (like VGG, ResNet), this gets flattened → <code>nn.Linear()</code> → softmax → class probabilities.</p>`;
+    <h3>🎯 Final Feature Maps — ${data.mode === 'vgg16' ? 'Pretrained VGG16' : 'Random Weights'}</h3>
+    <p>This <code>${last.shape[0]}×${last.shape[1]}×${last.shape[2]}</code> volume is what the fully connected layer sees. ${modeNote}</p>`;
   pipeline.appendChild(banner);
 }
 
-function showError(msg) {
-  const b = document.getElementById('error-box');
-  b.textContent = '⚠ ' + msg;
-  b.classList.add('show');
+function mkConnector() {
+  const d = document.createElement('div'); d.innerHTML='<div class="connector-line"></div>'; return d;
 }
 
-function setLoading(on) {
+function mkPredictions(preds) {
+  const card = document.createElement('div'); card.className='pred-card';
+  const rowsHtml = preds.map((p, i) => `
+    <div class="pred-row ${i===0?'pred-top':''}">
+      <div class="pred-label-row">
+        <span class="pred-name">${i===0?'🏆 ':''}<b>${p.label}</b></span>
+        <span class="pred-conf">${p.confidence}%</span>
+      </div>
+      <div class="pred-bar-bg"><div class="pred-bar" style="width:${p.confidence}%"></div></div>
+    </div>`).join('');
+  card.innerHTML = `
+    <div class="pred-header">
+      <span>🔮 VGG16 Predictions</span>
+      <small>Top 5 — ImageNet classes</small>
+    </div>
+    <div class="pred-body">${rowsHtml}</div>`;
+  return card;
+}
+
+function mkLayerCard(layer, idx) {
+  const card = document.createElement('div');
+  card.className = 'layer-result' + (layer.is_last ? ' is-last' : '');
+  card.style.animationDelay = (idx * 0.06) + 's';
+
+  const ops = (layer.ops || []).map(o => `<span class="op-tag">${o}</span>`).join('');
+
+  /* maps */
+  const mapsHtml = (layer.maps || []).map(m => {
+    const isTop = m.is_top;
+    return `
+      <div class="map-item">
+        <img src="data:image/png;base64,${m.b64}" class="${isTop?'top-map':''}" alt="ch${m.channel}">
+        <span class="map-ch ${isTop?'top':''}">
+          ch ${m.channel} ${isTop ? '<span class="top-badge">TOP</span>' : ''}
+        </span>
+      </div>`;
+  }).join('');
+
+  const moreNote = layer.total_maps > layer.shown_maps
+    ? `<div style="font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono)">showing ${layer.shown_maps} of ${layer.total_maps} channels${layer.is_last?' (top activated)':''}</div>`
+    : '';
+
+  const lastBadge = layer.is_last
+    ? '<span style="font-size:10px;color:var(--accent2);font-family:var(--mono);margin-left:8px">← FINAL LAYER</span>' : '';
+
+  card.innerHTML = `
+    <div class="layer-result-header">
+      <div class="layer-result-title">
+        <div class="layer-num">${layer.layer_idx}</div>
+        <div>
+          <div class="layer-result-name">${layer.label}${lastBadge}</div>
+          <div class="layer-result-shape">${layer.shape[0]}ch × ${layer.shape[1]}×${layer.shape[2]}px — kernel ${layer.kernel_size}×${layer.kernel_size}×?</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <div class="stats-pills">
+          <span class="pill pill-purple">mean ${layer.mean_activation}</span>
+          <span class="pill pill-pink">max ${layer.max_activation}</span>
+          <span class="pill pill-teal">${(100-layer.sparsity).toFixed(1)}% active</span>
+        </div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">${ops}</div>
+      </div>
+    </div>
+    <div class="maps-section">
+      <div class="maps-label">
+        Activation Maps
+        ${layer.is_last ? '<span class="last-note">✦ pink border = highest activated channels</span>' : ''}
+      </div>
+      <div class="maps-grid">${mapsHtml}</div>
+      ${moreNote}
+    </div>`;
+  return card;
+}
+
+function showError(msg) { const b=document.getElementById('error-box'); b.textContent='⚠ '+msg; b.classList.add('show'); }
+function setLoading(on, isVgg=false) {
   document.getElementById('loading').classList.toggle('show', on);
   document.getElementById('run-btn').disabled = on;
   if (on) {
     document.getElementById('pipeline').style.display = 'none';
     document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('loading-text').textContent = isVgg ? 'Loading VGG16 + running forward pass...' : 'Running forward pass...';
+    document.getElementById('loading-sub').textContent  = isVgg ? 'First run downloads pretrained weights (~550 MB)' : 'PyTorch is computing activations';
   }
 }
 
-init();
+/* ─── Init ─── */
+addLayer({ hidden_units:6,  kernel_size:3, stride:1, padding:1, batchnorm:true,  relu:true, pooling:false });
+addLayer({ hidden_units:16, kernel_size:3, stride:1, padding:0, batchnorm:true,  relu:true, pooling:true  });
 </script>
 </body>
 </html>
